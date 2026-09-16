@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON PULSE — Portfolio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cyan: #00e5ff;
+    --magenta: #ff2d95;
+    --purple: #a855f7;
+    --bg: #07020f;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: #eee;
+    overflow-x: hidden;
+  }
+  .bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(600px 400px at 15% 10%, rgba(0,229,255,.10), transparent 70%),
+      radial-gradient(600px 400px at 85% 20%, rgba(255,45,149,.10), transparent 70%),
+      radial-gradient(700px 500px at 50% 100%, rgba(168,85,247,.12), transparent 70%);
+  }
+  .cursor {
+    position: fixed; width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid var(--cyan); pointer-events: none; z-index: 99;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 18px rgba(0,229,255,.7), inset 0 0 10px rgba(0,229,255,.5);
+    transition: transform .12s ease, border-color .3s;
+    mix-blend-mode: screen;
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 5%;
+  }
+  nav .logo {
+    font-family: "Arial Black", sans-serif;
+    letter-spacing: 5px; font-size: 20px; color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan), 0 0 30px rgba(0,229,255,.6);
+  }
+  nav .links { display: flex; gap: 28px; }
+  nav a {
+    color: #cfc4ff; text-decoration: none; font-size: 14px; letter-spacing: 2px;
+    text-transform: uppercase; transition: color .3s, text-shadow .3s;
+  }
+  nav a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+  section { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 120px 24px 40px; }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .hero h1 {
+    font-family: "Arial Black", sans-serif;
+    font-size: clamp(48px, 10vw, 110px);
+    letter-spacing: 8px;
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan), 0 0 25px var(--cyan), 0 0 60px rgba(0,229,255,.7);
+    animation: flicker 5s linear infinite;
+  }
+  .hero .sub {
+    margin-top: 18px; color: var(--magenta); letter-spacing: 6px; font-size: 15px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px var(--magenta), 0 0 30px rgba(255,45,149,.6);
+  }
+  .hero p {
+    margin-top: 30px; max-width: 460px; color: #b9aef0; font-size: 16px; line-height: 1.8;
+  }
+  @keyframes flicker {
+    0%, 96%, 100% { opacity: 1; }
+    91% { opacity: .4; } 92% { opacity: 1; } 94% { opacity: .6; } 95% { opacity: 1; }
+  }
+  .cta {
+    margin-top: 42px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
+  }
+  .btn {
+    padding: 14px 34px; border-radius: 50px; text-decoration: none; font-size: 14px;
+    letter-spacing: 3px; text-transform: uppercase; transition: all .3s ease;
+  }
+  .btn.cyan {
+    color: var(--cyan); border: 2px solid var(--cyan);
+    background: rgba(0,229,255,.05);
+    box-shadow: 0 0 15px rgba(0,229,255,.4), inset 0 0 12px rgba(0,229,255,.2);
+  }
+  .btn.magenta {
+    color: var(--magenta); border: 2px solid var(--magenta);
+    background: rgba(255,45,149,.05);
+    box-shadow: 0 0 15px rgba(255,45,149,.4), inset 0 0 12px rgba(255,45,149,.2);
+  }
+  .btn:hover { transform: translateY(-4px); filter: brightness(1.35); }
+  h2 {
+    font-size: 32px; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 40px;
+    color: var(--purple); text-shadow: 0 0 12px rgba(168,85,247,.8);
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px;
+  }
+  .card {
+    background: rgba(255,255,255,.03); border: 1px solid rgba(0,229,255,.25);
+    border-radius: 14px; padding: 28px 24px; transition: all .3s ease;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: var(--cyan);
+    box-shadow: 0 0 22px rgba(0,229,255,.35), inset 0 0 18px rgba(0,229,255,.08);
+  }
+  .card .icon { font-size: 30px; margin-bottom: 14px; }
+  .card h3 { color: var(--cyan); margin-bottom: 10px; letter-spacing: 1px; font-size: 17px; }
+  .card p { color: #9f96c2; font-size: 14px; line-height: 1.7; }
+  .tick { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+  footer {
+    position: relative; z-index: 1; text-align: center; padding: 50px 20px;
+    color: #6c6390; letter-spacing: 4px; font-size: 12px; text-transform: uppercase;
+  }
+  .bar { width: 90px; height: 2px; margin: 0 auto 30px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 12px var(--cyan); }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="cursor" id="cur"></div>
+<nav>
+  <div class="logo">ATLAS</div>
+  <div class="links">
+    <a href="#work">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+<section class="hero">
+  <h1>NEON&nbsp;PULSE</h1>
+  <div class="sub">creative · code · glow</div>
+  <p>Builds thing under the neon glow. Sites, tools, scripts and voice notes that become text. All glowing, all functional.</p>
+  <div class="cta">
+    <a class="btn cyan" href="#work">See Work</a>
+    <a class="btn magenta" href="#contact">Say Hi</a>
+  </div>
+</section>
+<section id="work">
+  <h2>Glowing Work</h2>
+  <div class="bar"></div>
+  <div class="grid">
+    <div class="card"><div class="icon">🌐</div><h3>Art Showcase</h3><p>Generative canvas pieces, zero image files, full animation.</p></div>
+    <div class="card"><div class="icon">💻</div><h3>Retro Terminal</h3><p>A fake CRT terminal with working commands and easter eggs.</p></div>
+    <div class="card"><div class="icon">🎙️</div><h3>Voice to Text</h3><p>Any voice note in, a clean transcript out. Runs locally.</p></div>
+  </div>
+</section>
+<section id="skills">
+  <h2>Skills</h2>
+  <div class="bar"></div>
+  <div class="grid">
+    <div class="card"><div class="icon">🧩</div><h3>Builder</h3><p><span class="tick">✓</span> Fast delivery <br><span class="tick">✓</span> Self-contained pages <br><span class="tick">✓</span> One concept per project</p></div>
+    <div class="card"><div class="icon">🔮</div><h3>Style</h3><p><span class="tick">✓</span> Neon gradients <br><span class="tick">✓</span> Smooth hover motion <br><span class="tick">✓</span> Glow that pops</p></div>
+  </div>
+</section>
+<section id="contact">
+  <h2>Contact</h2>
+  <div class="bar"></div>
+  <div class="grid">
+    <div class="card" style="text-align:center"><div class="icon">⚡</div><h3>Just send a message</h3><p>Ship a request, get a site or tool back. That simple.</p></div>
+  </div>
+</section>
+<footer>neon pulse · built by atlas</footer>
+<script>
+  const cur = document.getElementById("cur");
+  document.addEventListener("mousemove", e => {
+    cur.style.left = e.clientX + "px";
+    cur.style.top = e.clientY + "px";
+  });
+  document.querySelectorAll(".card").forEach(c => {
+    c.addEventListener("mouseenter", () => { cur.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue("--magenta").trim(); });
+    c.addEventListener("mouseleave", () => { cur.style.borderColor = ""; });
+  });
+</script>
+</body>
+</html>
