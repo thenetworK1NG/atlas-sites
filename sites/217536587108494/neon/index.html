@@ -19,39 +19,61 @@
     color: #eee;
     overflow-x: hidden;
   }
-  .bg {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(600px 400px at 15% 10%, rgba(0,229,255,.10), transparent 70%),
-      radial-gradient(600px 400px at 85% 20%, rgba(255,45,149,.10), transparent 70%),
-      radial-gradient(700px 500px at 50% 100%, rgba(168,85,247,.12), transparent 70%);
+  canvas#fx {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; width: 100%; height: 100%;
+  }
+  .aurora {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    filter: blur(90px); opacity: .5; animation: drift 22s ease-in-out infinite;
+    background: radial-gradient(40% 40% at 20% 20%, var(--cyan), transparent 70%),
+                radial-gradient(40% 40% at 80% 30%, var(--magenta), transparent 70%),
+                radial-gradient(45% 45% at 55% 90%, var(--purple), transparent 70%);
+    background-size: 200% 200%;
+  }
+  @keyframes drift {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
   }
   .cursor {
-    position: fixed; width: 40px; height: 40px; border-radius: 50%;
+    position: fixed; width: 44px; height: 44px; border-radius: 50%;
     border: 2px solid var(--cyan); pointer-events: none; z-index: 99;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 18px rgba(0,229,255,.7), inset 0 0 10px rgba(0,229,255,.5);
-    transition: transform .12s ease, border-color .3s;
     mix-blend-mode: screen;
+    transition: transform .12s ease, width .2s, height .2s, border-color .3s;
   }
+  .cursor.grow { width: 70px; height: 70px; }
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 50;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 22px 5%;
+    padding: 22px 5%; backdrop-filter: blur(6px);
   }
   nav .logo {
     font-family: "Arial Black", sans-serif;
     letter-spacing: 5px; font-size: 20px; color: var(--cyan);
     text-shadow: 0 0 12px var(--cyan), 0 0 30px rgba(0,229,255,.6);
+    cursor: pointer;
   }
-  nav .links { display: flex; gap: 28px; }
+  nav .logo:hover { animation: flicker 1s linear infinite; }
+  .links { display: flex; gap: 28px; }
   nav a {
     color: #cfc4ff; text-decoration: none; font-size: 14px; letter-spacing: 2px;
-    text-transform: uppercase; transition: color .3s, text-shadow .3s;
+    text-transform: uppercase; position: relative; transition: color .3s;
+  }
+  nav a::after {
+    content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0;
+    background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+    transition: width .3s ease;
   }
   nav a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
-  section { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 120px 24px 40px; }
-  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  nav a:hover::after { width: 100%; }
+  @keyframes flicker {
+    0%, 92%, 100% { opacity: 1; }
+    90% { opacity: .45; } 91% { opacity: 1; }
+  }
+  section { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 130px 24px 40px; }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 80px; }
   .hero h1 {
     font-family: "Arial Black", sans-serif;
     font-size: clamp(48px, 10vw, 110px);
@@ -62,66 +84,98 @@
   }
   .hero .sub {
     margin-top: 18px; color: var(--magenta); letter-spacing: 6px; font-size: 15px;
-    text-transform: uppercase;
+    text-transform: uppercase; min-height: 24px;
     text-shadow: 0 0 10px var(--magenta), 0 0 30px rgba(255,45,149,.6);
   }
-  .hero p {
-    margin-top: 30px; max-width: 460px; color: #b9aef0; font-size: 16px; line-height: 1.8;
-  }
-  @keyframes flicker {
-    0%, 96%, 100% { opacity: 1; }
-    91% { opacity: .4; } 92% { opacity: 1; } 94% { opacity: .6; } 95% { opacity: 1; }
-  }
-  .cta {
-    margin-top: 42px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
-  }
+  .hero p { margin-top: 30px; max-width: 460px; color: #b9aef0; font-size: 16px; line-height: 1.8; }
+  .cta { margin-top: 44px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
   .btn {
     padding: 14px 34px; border-radius: 50px; text-decoration: none; font-size: 14px;
-    letter-spacing: 3px; text-transform: uppercase; transition: all .3s ease;
+    letter-spacing: 3px; text-transform: uppercase; transition: all .3s ease; position: relative;
   }
-  .btn.cyan {
-    color: var(--cyan); border: 2px solid var(--cyan);
-    background: rgba(0,229,255,.05);
-    box-shadow: 0 0 15px rgba(0,229,255,.4), inset 0 0 12px rgba(0,229,255,.2);
+  .btn.cyan { color: var(--cyan); border: 2px solid var(--cyan); background: rgba(0,229,255,.05); box-shadow: 0 0 15px rgba(0,229,255,.4), inset 0 0 12px rgba(0,229,255,.2); }
+  .btn.magenta { color: var(--magenta); border: 2px solid var(--magenta); background: rgba(255,45,149,.05); box-shadow: 0 0 15px rgba(255,45,149,.4), inset 0 0 12px rgba(255,45,149,.2); }
+  .btn:hover { transform: translateY(-4px) scale(1.04); filter: brightness(1.35); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .grid-floor {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 34vh; z-index: 0;
+    background:
+      linear-gradient(to top, rgba(0,229,255,.18), transparent);
+    animation: gridmove 1.2s linear infinite;
+    pointer-events: none;
   }
-  .btn.magenta {
-    color: var(--magenta); border: 2px solid var(--magenta);
-    background: rgba(255,45,149,.05);
-    box-shadow: 0 0 15px rgba(255,45,149,.4), inset 0 0 12px rgba(255,45,149,.2);
+  .grid-floor::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,45,149,.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,45,149,.5) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask: linear-gradient(to top, #000 30%, transparent);
+    mask: linear-gradient(to top, #000 30%, transparent);
+    transform: perspective(400px) rotateX(60deg); transform-origin: bottom;
   }
-  .btn:hover { transform: translateY(-4px); filter: brightness(1.35); }
+  @keyframes gridmove { from { background-position: 0 0; } to { background-position: 0 42px; } }
+  .ticker {
+    position: relative; z-index: 2; overflow: hidden; white-space: nowrap;
+    border-top: 1px solid rgba(0,229,255,.3); border-bottom: 1px solid rgba(255,45,149,.3);
+    padding: 14px 0; background: rgba(7,2,15,.8);
+  }
+  .ticker span {
+    display: inline-block; padding-right: 60px;
+    font-size: 15px; letter-spacing: 5px; color: var(--cyan);
+    text-transform: uppercase; text-shadow: 0 0 8px var(--cyan);
+    animation: slide 18s linear infinite;
+  }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-100%); } }
   h2 {
-    font-size: 32px; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 40px;
+    font-size: 32px; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 12px;
     color: var(--purple); text-shadow: 0 0 12px rgba(168,85,247,.8);
   }
-  .grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px;
-  }
+  .bar { width: 90px; height: 2px; margin: 0 0 44px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 12px var(--cyan); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
   .card {
     background: rgba(255,255,255,.03); border: 1px solid rgba(0,229,255,.25);
     border-radius: 14px; padding: 28px 24px; transition: all .3s ease;
+    opacity: 0; transform: translateY(30px);
   }
-  .card:hover {
-    transform: translateY(-6px);
-    border-color: var(--cyan);
-    box-shadow: 0 0 22px rgba(0,229,255,.35), inset 0 0 18px rgba(0,229,255,.08);
-  }
-  .card .icon { font-size: 30px; margin-bottom: 14px; }
+  .card.show { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease, border-color .3s, box-shadow .3s; }
+  .card .icon { font-size: 30px; margin-bottom: 14px; display: inline-block; transition: transform .3s; }
+  .card:hover { transform: translateY(-6px); border-color: var(--cyan); box-shadow: 0 0 22px rgba(0,229,255,.35), inset 0 0 18px rgba(0,229,255,.08); }
+  .card:hover .icon { transform: rotate(-8deg) scale(1.2); }
   .card h3 { color: var(--cyan); margin-bottom: 10px; letter-spacing: 1px; font-size: 17px; }
   .card p { color: #9f96c2; font-size: 14px; line-height: 1.7; }
   .tick { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
-  footer {
-    position: relative; z-index: 1; text-align: center; padding: 50px 20px;
-    color: #6c6390; letter-spacing: 4px; font-size: 12px; text-transform: uppercase;
+  .meter { margin-top: 20px; height: 8px; border-radius: 6px; background: rgba(0,229,255,.1); overflow: hidden; }
+  .meter i {
+    display: block; height: 100%; width: 0; border-radius: 6px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    box-shadow: 0 0 10px var(--cyan); transition: width 1.4s cubic-bezier(.22,1,.36,1);
   }
-  .bar { width: 90px; height: 2px; margin: 0 auto 30px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 12px var(--cyan); }
+  .orb {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+    filter: blur(6px); opacity: .5;
+  }
+  .orb.a { width: 90px; height: 90px; background: var(--magenta); box-shadow: 0 0 60px var(--magenta); animation: float 9s ease-in-out infinite; }
+  .orb.b { width: 60px; height: 60px; background: var(--cyan); box-shadow: 0 0 50px var(--cyan); animation: float 11s ease-in-out infinite reverse; }
+  @keyframes float {
+    0%, 100% { transform: translate(0,0); }
+    33% { transform: translate(24px, -30px); }
+    66% { transform: translate(-20px, 18px); }
+  }
+  footer { position: relative; z-index: 2; text-align: center; padding: 50px 20px; color: #6c6390; letter-spacing: 4px; font-size: 12px; text-transform: uppercase; }
+  .glow-pulse { animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .55; }
+  }
 </style>
 </head>
 <body>
-<div class="bg"></div>
+<canvas id="fx"></canvas>
+<div class="aurora"></div>
 <div class="cursor" id="cur"></div>
 <nav>
-  <div class="logo">ATLAS</div>
+  <div class="logo" onclick="location.reload()">ATLAS</div>
   <div class="links">
     <a href="#work">Work</a>
     <a href="#skills">Skills</a>
@@ -129,36 +183,44 @@
   </div>
 </nav>
 <section class="hero">
+  <div class="orb a" style="left:6%;top:18%"></div>
+  <div class="orb b" style="right:9%;top:30%"></div>
   <h1>NEON&nbsp;PULSE</h1>
-  <div class="sub">creative · code · glow</div>
-  <p>Builds thing under the neon glow. Sites, tools, scripts and voice notes that become text. All glowing, all functional.</p>
+  <div class="sub" id="typed"></div>
+  <p>Builds things under the neon glow. Sites, tools, scripts and voice notes that become text. All glowing, all functional.</p>
   <div class="cta">
     <a class="btn cyan" href="#work">See Work</a>
     <a class="btn magenta" href="#contact">Say Hi</a>
   </div>
+  <div class="grid-floor"></div>
 </section>
+<div class="ticker"><span>create ✦ build ✦ deploy ✦ transcribe ✦ design ✦ create ✦ build ✦ deploy ✦ transcribe ✦ design ✦ create ✦ build ✦ deploy</span></div>
 <section id="work">
   <h2>Glowing Work</h2>
   <div class="bar"></div>
   <div class="grid">
-    <div class="card"><div class="icon">🌐</div><h3>Art Showcase</h3><p>Generative canvas pieces, zero image files, full animation.</p></div>
-    <div class="card"><div class="icon">💻</div><h3>Retro Terminal</h3><p>A fake CRT terminal with working commands and easter eggs.</p></div>
-    <div class="card"><div class="icon">🎙️</div><h3>Voice to Text</h3><p>Any voice note in, a clean transcript out. Runs locally.</p></div>
+    <div class="card" data-i="0"><div class="icon">🌐</div><h3>Art Showcase</h3><p>Generative canvas pieces, zero image files, full animation.</p></div>
+    <div class="card" data-i="1"><div class="icon">💻</div><h3>Retro Terminal</h3><p>A fake CRT terminal with working commands and easter eggs.</p></div>
+    <div class="card" data-i="2"><div class="icon">🎙️</div><h3>Voice to Text</h3><p>Any voice note in, a clean transcript out. Runs locally.</p></div>
   </div>
 </section>
 <section id="skills">
   <h2>Skills</h2>
   <div class="bar"></div>
   <div class="grid">
-    <div class="card"><div class="icon">🧩</div><h3>Builder</h3><p><span class="tick">✓</span> Fast delivery <br><span class="tick">✓</span> Self-contained pages <br><span class="tick">✓</span> One concept per project</p></div>
-    <div class="card"><div class="icon">🔮</div><h3>Style</h3><p><span class="tick">✓</span> Neon gradients <br><span class="tick">✓</span> Smooth hover motion <br><span class="tick">✓</span> Glow that pops</p></div>
+    <div class="card"><div class="icon">🧩</div><h3>Builder</h3><p>Fast delivery, self-contained pages, one concept per project.</p>
+      <div class="meter"><i data-w="92"></i></div></div>
+    <div class="card"><div class="icon">🔮</div><h3>Style</h3><p>Neon gradients, smooth hover motion, glow that pops.</p>
+      <div class="meter"><i data-w="88"></i></div></div>
+    <div class="card"><div class="icon">⚡</div><h3>Speed</h3><p>Quick turnaround from idea to live link.</p>
+      <div class="meter"><i data-w="96"></i></div></div>
   </div>
 </section>
 <section id="contact">
   <h2>Contact</h2>
   <div class="bar"></div>
   <div class="grid">
-    <div class="card" style="text-align:center"><div class="icon">⚡</div><h3>Just send a message</h3><p>Ship a request, get a site or tool back. That simple.</p></div>
+    <div class="card" style="text-align:center"><div class="icon glow-pulse">⚡</div><h3>Just send a message</h3><p>Ship a request, get a site or tool back. That simple.</p></div>
   </div>
 </section>
 <footer>neon pulse · built by atlas</footer>
@@ -168,10 +230,65 @@
     cur.style.left = e.clientX + "px";
     cur.style.top = e.clientY + "px";
   });
-  document.querySelectorAll(".card").forEach(c => {
-    c.addEventListener("mouseenter", () => { cur.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue("--magenta").trim(); });
-    c.addEventListener("mouseleave", () => { cur.style.borderColor = ""; });
+  document.querySelectorAll(".card, a").forEach(el => {
+    el.addEventListener("mouseenter", () => cur.classList.add("grow"));
+    el.addEventListener("mouseleave", () => cur.classList.remove("grow"));
   });
+  const words = ["creative · code · glow", "build · deploy · repeat", "voice in → text out", "always glowing"];
+  const typed = document.getElementById("typed");
+  let wi = 0, ci = 0, del = false;
+  (function loop() {
+    const w = words[wi];
+    ci += del ? -1 : 1;
+    typed.textContent = w.slice(0, ci);
+    if (!del && ci === w.length) { del = true; setTimeout(loop, 2200); return; }
+    if (del && ci === 0) { del = false; wi = (wi + 1) % words.length; }
+    setTimeout(loop, del ? 45 : 95);
+  })();
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.classList.add("show");
+      en.target.querySelectorAll("i[data-w]").forEach(m => m.style.width = m.dataset.w + "%");
+      io.unobserve(en.target);
+    }
+  }), { threshold: .18 });
+  document.querySelectorAll(".card").forEach(c => io.observe(c));
+  const cv = document.getElementById("fx"), f = cv.getContext("2d");
+  const DPR = Math.min(devicePixelRatio || 1, 2);
+  let W, H, parts = [];
+  function resize() {
+    W = innerWidth; H = innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    f.setTransform(DPR, 0, 0, DPR, 0, 0);
+    parts = Array.from({ length: Math.min(90, Math.floor(W * H / 16000)) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .4, vy: (Math.random() - .5) * .4,
+      cyan: Math.random() > .5
+    }));
+  }
+  addEventListener("resize", resize); resize();
+  (function draw() {
+    f.clearRect(0, 0, W, H);
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      f.beginPath(); f.arc(p.x, p.y, 1.6, 0, 7);
+      f.fillStyle = p.cyan ? "rgba(0,229,255,.7)" : "rgba(255,45,149,.7)";
+      f.fill();
+    }
+    for (let i = 0; i < parts.length; i++)
+      for (let j = i + 1; j < parts.length; j++) {
+        const dx = parts[i].x - parts[j].x, dy = parts[i].y - parts[j].y;
+        const d = Math.hypot(dx, dy);
+        if (d < 130) {
+          f.beginPath(); f.moveTo(parts[i].x, parts[i].y); f.lineTo(parts[j].x, parts[j].y);
+          f.strokeStyle = "rgba(0,229,255," + (1 - d / 130) * .25 + ")";
+          f.lineWidth = 1; f.stroke();
+        }
+      }
+    requestAnimationFrame(draw);
+  })();
 </script>
 </body>
 </html>
