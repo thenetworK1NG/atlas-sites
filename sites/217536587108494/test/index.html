@@ -5,46 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Page</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0f;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(57,255,20,0.15), transparent 70%);
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.4); opacity: 1; }
         }
         .card {
-            background: #fff;
-            padding: 40px 50px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: rgba(20, 20, 30, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 50px 60px;
+            border-radius: 16px;
             text-align: center;
+            border: 2px solid #39ff14;
+            box-shadow: 0 0 25px #39ff14, 0 0 60px rgba(57,255,20,0.4), inset 0 0 20px rgba(57,255,20,0.15);
+            animation: glow 2.5s ease-in-out infinite, fadeInUp 0.8s ease-out both;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px #39ff14, 0 0 50px rgba(57,255,20,0.4), inset 0 0 15px rgba(57,255,20,0.12); }
+            50% { box-shadow: 0 0 40px #39ff14, 0 0 90px rgba(57,255,20,0.7), inset 0 0 30px rgba(57,255,20,0.25); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card h1 {
-            color: #1a73e8;
-            margin: 0 0 10px;
+            color: #39ff14;
+            margin-bottom: 12px;
+            font-size: 42px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #39ff14, 0 0 25px #39ff14, 0 0 50px #39ff14;
+            font-weight: 700;
         }
         .card p {
-            color: #555;
-            margin: 0;
+            color: #d4ffd0;
+            margin-bottom: 24px;
+            font-size: 17px;
         }
         .status {
             display: inline-block;
-            margin-top: 20px;
-            padding: 6px 14px;
-            background: #e6f4ea;
-            color: #1e8e3e;
-            border-radius: 20px;
+            padding: 8px 18px;
+            background: rgba(57,255,20,0.1);
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            border-radius: 25px;
             font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px #39ff14;
+            animation: blink 1.4s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #39ff14;
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 12px #39ff14;
+            animation: blink 1.2s step-end infinite;
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Hello, it works</h1>
+        <h1>HELLO</h1>
         <p>This is a test page from ATLAS.</p>
-        <span class="status">site is live</span>
+        <span class="status"><span class="dot"></span>site is live</span>
     </div>
 </body>
 </html>
