@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RT</title>
+<title>RT - Art</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #0b0b0f;
-    --paper: #f4f1ea;
-    --accent: #d6442f;
-    --line: rgba(244,241,234,.14);
+    --paper: #f2efe9;
+    --mute: rgba(242,239,233,.55);
+    --line: rgba(242,239,233,.12);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +26,7 @@
     overflow-x: hidden;
   }
 
-  ::selection { background: var(--accent); color: var(--ink); }
+  ::selection { background: var(--paper); color: var(--ink); }
 
   /* ---------- Nav ---------- */
   nav {
@@ -36,15 +36,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 22px 6vw;
+    padding: 24px 6vw;
     mix-blend-mode: difference;
   }
 
   .nav-logo {
     font-family: 'Archivo', sans-serif;
     font-weight: 900;
-    font-size: 1.4rem;
-    letter-spacing: .35em;
+    font-size: 1.3rem;
+    letter-spacing: .4em;
     color: var(--paper);
   }
 
@@ -57,270 +57,165 @@
   .nav-links a {
     color: var(--paper);
     text-decoration: none;
-    font-size: .8rem;
-    letter-spacing: .22em;
+    font-size: .72rem;
+    letter-spacing: .26em;
     text-transform: uppercase;
     font-weight: 600;
+    transition: opacity .2s ease;
   }
 
-  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover { opacity: .55; }
 
   /* ---------- Hero ---------- */
   .hero {
     min-height: 100svh;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 6vw 8vh;
     position: relative;
-    padding: 120px 6vw 80px;
-  }
-
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(60% 50% at 50% 0%, rgba(214,68,47,.16), transparent 70%),
-      radial-gradient(40% 40% at 80% 100%, rgba(214,68,47,.08), transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero-inner {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero img.hero-logo {
-    max-width: min(560px, 78vw);
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto 10px;
-    filter: drop-shadow(0 30px 60px rgba(0,0,0,.6));
   }
 
   .hero h1 {
     font-family: 'Archivo', sans-serif;
     font-weight: 900;
-    font-size: clamp(3.5rem, 14vw, 12rem);
-    line-height: .9;
-    letter-spacing: .02em;
-    margin: 20px 0 8px;
+    font-size: clamp(4.5rem, 18vw, 16rem);
+    line-height: .82;
+    letter-spacing: .01em;
     text-transform: uppercase;
   }
 
-  .hero h1 .accent {
+  .hero h1 .outline {
     color: transparent;
     -webkit-text-stroke: 2px var(--paper);
   }
 
-  .hero p.tag {
-    font-size: clamp(.85rem, 2.4vw, 1.05rem);
-    letter-spacing: .5em;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: rgba(244,241,234,.65);
-  }
-
-  .line {
-    width: 64px;
-    height: 2px;
-    background: var(--accent);
-    margin: 28px auto;
-  }
-
-  /* ---------- Marquee ---------- */
-  .marquee {
+  .hero .meta {
+    margin-top: 40px;
+    padding-top: 22px;
     border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    padding: 18px 0;
-    overflow: hidden;
-    position: relative;
-    background: #0e0e13;
-  }
-
-  .marquee-track {
     display: flex;
-    gap: 4rem;
-    width: max-content;
-    animation: scroll 26s linear infinite;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
   }
 
-  .marquee span {
-    font-family: 'Archivo', sans-serif;
-    font-weight: 900;
-    font-size: 1.1rem;
+  .hero .meta span {
+    font-size: .72rem;
     letter-spacing: .3em;
     text-transform: uppercase;
-    color: rgba(244,241,234,.75);
+    color: var(--mute);
+  }
+
+  /* ---------- Work list ---------- */
+  .works { padding: 0 6vw 140px; }
+
+  .work-item {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 120px;
+    gap: 4vw;
+    align-items: center;
+    padding: 54px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .work-item:last-child { border-bottom: 1px solid var(--line); }
+
+  .work-item .index {
+    font-family: 'Archivo', sans-serif;
+    font-size: .9rem;
+    letter-spacing: .3em;
+    color: var(--mute);
+  }
+
+  .work-item .frame {
+    position: relative;
+    overflow: hidden;
+    background: #101016;
+  }
+
+  .work-item .frame img {
+    width: 100%;
+    height: min(70vh, 620px);
+    object-fit: cover;
+    display: block;
+    filter: grayscale(.15);
+    transition: transform 1.1s cubic-bezier(.16,1,.3,1);
+  }
+
+  .work-item:hover .frame img { transform: scale(1.035); }
+
+  .work-item .title {
+    font-family: 'Archivo', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    justify-self: end;
     white-space: nowrap;
   }
 
-  .marquee span.hl { color: var(--accent); }
-
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* ---------- Section base ---------- */
-  section { padding: 110px 6vw; }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: 60px;
-  }
-
-  .section-head h2 {
-    font-family: 'Archivo', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    text-transform: uppercase;
-    line-height: 1;
-  }
-
-  .section-head .num {
-    font-size: .85rem;
-    letter-spacing: .3em;
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  /* ---------- About ---------- */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 6vw;
-    align-items: center;
-  }
-
-  .about-grid img {
-    width: 100%;
-    height: min(72vh, 680px);
-    object-fit: cover;
-    border-radius: 4px;
-    filter: grayscale(.2);
-  }
-
-  .about-copy p {
-    color: rgba(244,241,234,.72);
-    font-size: 1.05rem;
-    line-height: 1.75;
-    margin-bottom: 1.5rem;
-  }
-
-  .about-copy p b { color: var(--paper); }
-
-  .stat-row {
-    display: flex;
-    gap: 3rem;
-    margin-top: 2.5rem;
-    padding-top: 2.5rem;
+  /* ---------- Statement ---------- */
+  .statement {
+    padding: 120px 6vw;
     border-top: 1px solid var(--line);
-  }
-
-  .stat-row .stat b {
-    font-family: 'Archivo', sans-serif;
-    font-size: 1.6rem;
-    display: block;
-    color: var(--accent);
-  }
-
-  .stat-row .stat span {
-    font-size: .75rem;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: rgba(244,241,234,.55);
-  }
-
-  /* ---------- Drop / Features ---------- */
-  .drop { background: var(--ink); position: relative; }
-
-  .card {
-    background: #101016;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 34px;
-    min-height: 200px;
-    transition: transform .3s ease, border-color .3s ease;
-  }
-
-  .card:hover { transform: translateY(-6px); border-color: rgba(214,68,47,.45); }
-
-  .card .idx {
-    font-size: .8rem;
-    letter-spacing: .3em;
-    color: var(--accent);
-  }
-
-  .card h3 {
-    font-family: 'Archivo', sans-serif;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    margin: 18px 0 12px;
-  }
-
-  .card p { color: rgba(244,241,234,.62); font-size: .95rem; line-height: 1.65; }
-
-  .cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: 200px 1fr;
+    gap: 4vw;
   }
 
-  /* ---------- Drop image band ---------- */
-  .drop-band {
-    margin-top: 100px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 6px;
+  .statement .label {
+    font-size: .72rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--mute);
   }
 
-  .drop-band img {
-    width: 100%;
-    height: min(80vh, 620px);
-    object-fit: cover;
-    display: block;
+  .statement p {
+    font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 46ch;
   }
+
+  .statement p b { font-weight: 500; }
 
   /* ---------- Footer ---------- */
   footer {
-    text-align: center;
-    padding: 90px 6vw 50px;
+    padding: 80px 6vw 46px;
     border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
-  footer .big {
-    font-family: 'Archivo', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.6rem, 10vw, 8rem);
+  footer .nav-logo { position: static; mix-blend-mode: normal; font-size: 1.1rem; }
+
+  footer span {
+    font-size: .68rem;
+    letter-spacing: .28em;
     text-transform: uppercase;
-    letter-spacing: .06em;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(244,241,234,.9);
-    margin-bottom: 26px;
+    color: var(--mute);
   }
-
-  footer p { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: rgba(244,241,234,.45); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
     .nav-links { display: none; }
-    .about-grid { grid-template-columns: 1fr; }
-    .about-grid img { height: 48vh; }
-    .cards { grid-template-columns: 1fr; }
-    .stat-row { gap: 2rem; flex-wrap: wrap; }
-    section { padding: 80px 6vw; }
+    .work-item { grid-template-columns: 1fr; gap: 18px; padding: 40px 0; }
+    .work-item .frame img { height: 52vh; }
+    .work-item .title { writing-mode: horizontal-tb; transform: none; justify-self: start; }
+    .statement { grid-template-columns: 1fr; gap: 20px; }
+    .works { padding-bottom: 90px; }
   }
 
-  /* ---------- Reveal on scroll ---------- */
+  /* ---------- Reveal ---------- */
   .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity .8s ease, transform .8s ease;
+    transform: translateY(26px);
+    transition: opacity .9s ease, transform .9s ease;
   }
 
   .reveal.in { opacity: 1; transform: none; }
@@ -331,81 +226,48 @@
 <nav>
   <div class="nav-logo">RT</div>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#drop">Drop</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#statement">Statement</a></li>
   </ul>
 </nav>
 
 <header class="hero">
-  <div class="hero-inner">
-    <img src="rt-logo.jpg" alt="RT" class="hero-logo">
-    <h1>RT <span class="accent">&#215;</span> BOW8TIP</h1>
-    <p class="tag">The Collab Drop</p>
-    <div class="line"></div>
+  <h1>RT<span class="outline">B81</span></h1>
+  <div class="meta">
+    <span>Art</span>
+    <span>Works</span>
+    <span>Selected</span>
   </div>
 </header>
 
-<div class="marquee">
-  <div class="marquee-track">
-    <span>RT</span><span class="hl">&#215;</span><span>Bow8Tip</span><span>&mdash;</span>
-    <span>RT</span><span class="hl">&#215;</span><span>Bow8Tip</span><span>&mdash;</span>
-    <span>RT</span><span class="hl">&#215;</span><span>Bow8Tip</span><span>&mdash;</span>
-    <span>RT</span><span class="hl">&#215;</span><span>Bow8Tip</span><span>&mdash;</span>
-  </div>
-</div>
+<main id="works" class="works">
 
-<section id="about">
-  <div class="section-head reveal">
-    <span class="num">01</span>
-    <h2>Bow8Tip</h2>
-  </div>
-  <div class="about-grid">
-    <img src="bow8tip.jpg" alt="Bow8Tip" class="reveal">
-    <div class="about-copy reveal">
-      <p><b>RT</b> and <b>Bow8Tip</b> come together for one drop. Two worlds, one line.</p>
-      <p>Nothing wasted, nothing loud. Just clean pieces built to last and made to move.</p>
-      <div class="stat-row">
-        <div class="stat"><b>01</b><span>Drop</span></div>
-        <div class="stat"><b>02</b><span>Names</span></div>
-        <div class="stat"><b>&#8734;</b><span>Standards</span></div>
-      </div>
+  <div class="work-item reveal">
+    <span class="index">01</span>
+    <div class="frame">
+      <img src="rt-logo.jpg" alt="Untitled 01">
     </div>
+    <h2 class="title">Untitled 01</h2>
   </div>
+
+  <div class="work-item reveal">
+    <span class="index">02</span>
+    <div class="frame">
+      <img src="bow8tip.jpg" alt="Untitled 02">
+    </div>
+    <h2 class="title">Untitled 02</h2>
+  </div>
+
+</main>
+
+<section id="statement" class="statement">
+  <span class="label">Statement</span>
+  <p>Two works. <b>RT</b> and <b>Bow8Tip</b>. Nothing added, nothing explained. The work speaks, you just look.</p>
 </section>
 
-<section id="drop" class="drop">
-  <div class="section-head reveal">
-    <span class="num">02</span>
-    <h2>The Drop</h2>
-  </div>
-
-  <div class="cards">
-    <div class="card reveal">
-      <span class="idx">/ 01</span>
-      <h3>Quality</h3>
-      <p>Heavyweight fabrics, precise stitching. Made the right way or not at all.</p>
-    </div>
-    <div class="card reveal">
-      <span class="idx">/ 02</span>
-      <h3>Limited</h3>
-      <p>One release, no restock. When it's gone, it's gone.</p>
-    </div>
-    <div class="card reveal">
-      <span class="idx">/ 03</span>
-      <h3>Identity</h3>
-      <p>Wear the names that mean something. RT. Bow8Tip.</p>
-    </div>
-  </div>
-
-  <div class="drop-band reveal">
-    <img src="rt-logo.jpg" alt="RT">
-  </div>
-</section>
-
-<footer id="contact">
-  <div class="big">RT&#215;B81</div>
-  <p>&#169; RT &#215; Bow8Tip &mdash; One drop, two names</p>
+<footer>
+  <div class="nav-logo">RT</div>
+  <span>&#169; RT x Bow8Tip</span>
 </footer>
 
 <script>
@@ -415,9 +277,6 @@
     });
   }, { threshold: .15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  const track = document.querySelector('.marquee-track');
-  track.innerHTML = track.innerHTML + track.innerHTML;
 </script>
 
 </body>
