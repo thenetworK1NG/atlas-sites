@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment · Gallery</title>
+<style>
+  :root { --ink:#111114; --paper:#f3efe6; --accent:#c9492e; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:"Georgia", "Times New Roman", serif; background:var(--paper); color:var(--ink); line-height:1.55; }
+  header { padding:3.5rem 1.5rem 1.5rem; text-align:center; }
+  header .tag { font-family:"Arial", sans-serif; letter-spacing:.35em; font-size:.7rem; text-transform:uppercase; color:var(--accent); }
+  h1 { font-size:clamp(2.2rem, 9vw, 4.5rem); font-weight:400; letter-spacing:-.02em; margin-top:.6rem; }
+  header p { max-width:34rem; margin:1rem auto 0; font-style:italic; color:#5a5647; font-size:1.05rem; }
+  figure { position:relative; margin:2.5rem auto; width:min(90vw, 640px); }
+  figure img { width:100%; height:auto; display:block; filter:saturate(1.05) contrast(1.02); }
+  figcaption { display:flex; justify-content:space-between; padding:.6rem .2rem 0; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; color:#6b675a; }
+  .verse { max-width:34rem; margin:0 auto; padding:0 1.5rem 3rem; text-align:center; font-size:1.15rem; font-style:italic; color:#4f4c40; }
+  .verse span { display:block; margin-top:.9rem; font-size:.8rem; letter-spacing:.25em; text-transform:uppercase; font-style:normal; color:var(--accent); }
+  footer { padding:2rem 1.5rem 3.5rem; text-align:center; font-family:"Arial", sans-serif; font-size:.7rem; letter-spacing:.3em; text-transform:uppercase; color:#8a8575; }
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">Fragment No. 04</div>
+  <h1>A moment, framed</h1>
+  <p>Some things don't need words. They just ask to be looked at.</p>
+</header>
+
+<figure>
+  <img src="photo.jpg" alt="Untitled photograph">
+  <figcaption>
+    <span>Untitled</span>
+    <span>Captured, not staged</span>
+  </figcaption>
+</figure>
+
+<div class="verse">
+  Light finds its way into every corner, eventually.
+  <span>— stay curious</span>
+</div>
+
+<footer>Atlas &amp; the art of slowing down</footer>
+</body>
+</html>
