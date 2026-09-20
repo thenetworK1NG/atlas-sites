@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cannabis 101 - Informational Guide</title>
+<style>
+  :root {
+    --green-dark: #1e3d2c;
+    --green: #2f6b45;
+    --green-light: #4ca56b;
+    --cream: #f5f1e4;
+    --gold: #d4a24e;
+    --dark: #142619;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Georgia, serif;
+    background: var(--cream);
+    color: var(--dark);
+    line-height: 1.7;
+  }
+  header.hero {
+    background: linear-gradient(135deg, var(--green-dark), var(--green));
+    color: var(--cream);
+    text-align: center;
+    padding: 80px 20px 60px;
+  }
+  header.hero h1 {
+    font-size: 3rem;
+    letter-spacing: 1px;
+  }
+  header.hero p {
+    font-size: 1.3rem;
+    color: #cde5cf;
+    margin-top: 10px;
+  }
+  nav {
+    background: var(--green-dark);
+    padding: 14px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  nav a {
+    color: var(--cream);
+    text-decoration: none;
+    margin: 0 14px;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+  nav a:hover { color: var(--gold); }
+  section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 50px 20px;
+  }
+  section h2 {
+    color: var(--green);
+    font-size: 2rem;
+    margin-bottom: 18px;
+    border-bottom: 3px solid var(--gold);
+    display: inline-block;
+    padding-bottom: 4px;
+  }
+  section p { margin-bottom: 14px; font-size: 1.05rem; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-top: 4px solid var(--green);
+  }
+  .card h3 { color: var(--green-dark); margin-bottom: 8px; }
+  .card p { font-size: 0.95rem; color: #444; }
+  .legality {
+    background: #eaf3e9;
+    border-left: 6px solid var(--gold);
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+  }
+  .flag-box {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 24px;
+    border-radius: 10px;
+    margin-top: 24px;
+  }
+  .flag-box h3 { color: var(--gold); margin-bottom: 10px; }
+  footer {
+    background: var(--dark);
+    color: #9db8a4;
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 0.9rem;
+  }
+  footer span { color: var(--gold); }
+  .disclaimer {
+    background: #f0e6cf;
+    padding: 18px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border: 1px solid var(--gold);
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>🍃 Cannabis 101</h1>
+  <p>Your friendly guide to the green stuff</p>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#strains">Strains</a>
+  <a href="#consumption">Ways to Use</a>
+  <a href="#legal">Legality</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<section id="about">
+  <h2>What is Cannabis?</h2>
+  <p>Cannabis is a plant humans have used for thousands of years, for medicine, ceremony, and pure relaxation. Today it's commonly enjoyed for its two star ingredients:</p>
+  <div class="cards">
+    <div class="card">
+      <h3>THC</h3>
+      <p>The part that gets you high. It's what gives the classic euphoric, giggly, relaxed feeling.</p>
+    </div>
+    <div class="card">
+      <h3>CBD</h3>
+      <p>The chill cousin. No high, just potential help with pain, anxiety, and sleep.</p>
+    </div>
+  </div>
+</section>
+
+<section id="strains">
+  <h2>Understanding Strains</h2>
+  <p>Strains are loosely grouped into three families, based on how they tend to make you feel:</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Sativa</h3>
+      <p>Uplifting and energetic. Great for daytime, creativity, and social hangs.</p>
+    </div>
+    <div class="card">
+      <h3>Indica</h3>
+      <p>Relaxing and sleepy. Good for nighttime, winding down, and easing tension.</p>
+    </div>
+    <div class="card">
+      <h3>Hybrid</h3>
+      <p>A mix of both. The most common kind you'll find, with balanced effects.</p>
+    </div>
+  </div>
+</section>
+
+<section id="consumption">
+  <h2>Ways to Use</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Flower</h3>
+      <p>Smoked or vaped. The classic, with the most aroma and flavor variety.</p>
+    </div>
+    <div class="card">
+      <h3>Edibles</h3>
+      <p>Gummies, brownies, drinks. Kicks in slower but lasts way longer. Start low!</p>
+    </div>
+    <div class="card">
+      <h3>Concentrates</h3>
+      <p>Wax, dabs, oils. Very strong, for the experienced crowd.</p>
+    </div>
+    <div class="card">
+      <h3>Tinctures</h3>
+      <p>Drops under the tongue. Easy to dose, no smoke involved.</p>
+    </div>
+  </div>
+</section>
+
+<section id="legal">
+  <h2>Is it Legal?</h2>
+  <p>This is the big one, and honestly it depends entirely on where in the world you are. Here's the short version:</p>
+  <div class="legality">
+    <strong>Some places let you buy it at licensed shops.</strong> You walk in, show ID, pay, and leave. Canadian and several US states work this way.
+  </div>
+  <div class="legality">
+    <strong>Some places allow medical only.</strong> You need a doctor's approval and a card for conditions like chronic pain.
+  </div>
+  <div class="legality">
+    <strong>And some places still say no.</strong> Even there, CBD products are usually okay since they don't get you high.
+  </div>
+  <p style="margin-top:18px;">The golden rule: always check your local laws before buying anything, and wherever it is legal, buying from licensed dispensaries keeps you safe, tested, and above board.</p>
+</section>
+
+<section id="faq">
+  <h2>Quick FAQ</h2>
+  <div class="flag-box">
+    <h3>Will it mess me up?</h3>
+    <p>Not the way people fear. Most folks just feel relaxed and a bit goofy. Overdo it and you might get sleepy or paranoid, but it fades.</p>
+  </div>
+  <div class="flag-box">
+    <h3>How much should I take?</h3>
+    <p>Start small, especially with edibles. You can always add more, you can't really take less. 5mg is a friendly first dose.</p>
+  </div>
+  <div class="flag-box">
+    <h3>Can I drive?</h3>
+    <p>Definitely don't drive after using. Same rule as alcohol, it slows your reaction time.</p>
+  </div>
+</section>
+
+<div class="disclaimer" style="max-width:820px;margin:0 auto 50px;">
+  <strong>Heads up:</strong> This site is purely informational. Cannabis laws vary a lot from place to place, and this guide doesn't give legal or medical advice. Always follow the rules where you live.
+</div>
+
+<footer>
+  Made with love (& a little green) 🍃 · <span>Cannabis 101</span>
+</footer>
+
+</body>
+</html>
