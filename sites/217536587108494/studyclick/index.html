@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyClick - Idle Learning Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Archivo:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d17;
+    --panel: #131627;
+    --panel2: #191d31;
+    --line: rgba(255,255,255,.08);
+    --text: #eef0f8;
+    --mute: #8b90a8;
+    --violet: #8b5cf6;
+    --blue: #3b82f6;
+    --gold: #f5c542;
+    --green: #34d399;
+    --red: #f87171;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100svh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 45% at 15% 0%, rgba(139,92,246,.14), transparent 60%),
+      radial-gradient(50% 40% at 85% 100%, rgba(59,130,246,.12), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 18px 40px; }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 22px 0;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; }
+
+  .logo .icon {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(139,92,246,.35);
+  }
+
+  .logo h1 {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: .02em;
+  }
+
+  .logo small { display: block; color: var(--mute); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
+
+  .hud { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .hud .chip {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 16px;
+    min-width: 108px;
+  }
+
+  .chip .k { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+  .chip .v { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 1.05rem; margin-top: 2px; }
+  .chip.primary .v { color: var(--gold); }
+  .chip.sp .v { color: var(--violet); }
+
+  /* ---------- Layout -------- */
+  .game-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1.6fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  /* ---------- Clicker ---------- */
+  .stage { text-align: center; position: relative; overflow: hidden; }
+
+  .count {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 6.5vw, 3.4rem);
+    line-height: 1;
+    background: linear-gradient(180deg, #fff, #b9bdd6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .count small { font-size: .9rem; }
+
+  .rate { color: var(--mute); font-size: .9rem; margin-top: 8px; }
+  .rate b { color: var(--green); font-weight: 700; }
+
+  .combo-wrap { margin: 14px auto 0; max-width: 90%; }
+  .combo-text { font-size: .78rem; color: var(--violet); font-weight: 700; display: none; }
+  .combo-bar {
+    height: 6px; background: rgba(255,255,255,.06);
+    border-radius: 99px; margin-top: 6px; overflow: hidden;
+  }
+  .combo-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--violet), var(--blue));
+    border-radius: 99px;
+    transition: width .2s linear;
+  }
+
+  .book {
+    width: min(240px, 60vw);
+    aspect-ratio: 1;
+    margin: 22px auto 0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: clamp(3.6rem, 10vw, 5.4rem);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    background: radial-gradient(circle at 32% 28%, #2a2140, #171226 70%);
+    border: 2px solid rgba(139,92,246,.45);
+    box-shadow: 0 0 0 0 rgba(139,92,246,.35), 0 18px 50px rgba(0,0,0,.5);
+    transition: transform .08s ease, box-shadow .25s ease;
+    position: relative;
+  }
+
+  .book:hover { box-shadow: 0 0 0 8px rgba(139,92,246,.08), 0 18px 50px rgba(0,0,0,.5); }
+  .book:active { transform: scale(.93); }
+
+  .floater {
+    position: absolute;
+    pointer-events: none;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--gold);
+    text-shadow: 0 2px 10px rgba(0,0,0,.6);
+    animation: floatUp 1.1s ease-out forwards;
+    z-index: 20;
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0) scale(.8); }
+    15% { opacity: 1; transform: translateY(-18px) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-90px) scale(1); }
+  }
+
+  .click-help { margin-top: 18px; font-size: .78rem; color: var(--mute); }
+
+  /* ---------- Buy amount ---------- */
+  .buy-row { display: flex; gap: 8px; margin-top: 20px; }
+
+  .buy-btn {
+    flex: 1;
+    padding: 10px 0;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--mute);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  .buy-btn.active { background: var(--violet); border-color: var(--violet); color: #fff; box-shadow: 0 4px 18px rgba(139,92,246,.35); }
+
+  .max-label {
+    margin-top: 12px;
+    font-size: .72rem;
+    color: var(--mute);
+    text-align: center;
+  }
+  .max-label b { color: var(--gold); }
+
+  /* ---------- Tabs ---------- */
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+
+  .tab {
+    padding: 9px 18px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--mute);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .tab .dot {
+    display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--gold);
+    margin-left: 6px; vertical-align: 1px;
+  }
+
+  /* ---------- Shop items ---------- */
+  .shop-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  .shop-item:hover { border-color: rgba(139,92,246,.4); transform: translateY(-1px); }
+
+  .shop-item.locked { opacity: .45; cursor: not-allowed; }
+  .shop-item.bought { opacity: .5; cursor: default; }
+  .shop-item.bought:hover { transform: none; border-color: var(--line); }
+  .shop-item.bought .ico { filter: saturate(.2); }
+
+  .shop-item .ico {
+    width: 46px; height: 46px;
+    flex: 0 0 46px;
+    display: grid; place-items: center;
+    font-size: 1.4rem;
+    background: rgba(255,255,255,.04);
+    border-radius: 10px;
+  }
+
+  .shop-item .info { flex: 1; min-width: 0; }
+
+  .shop-item .name { font-weight: 700; font-size: .95rem; display: flex; gap: 8px; align-items: center; }
+  .shop-item .name .count { font-family: 'Archivo'; font-size: 1rem; }
+  .shop-item .desc { font-size: .74rem; color: var(--mute); margin-top: 2px; }
+
+  .shop-item .cost {
+    text-align: right;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .shop-item .cost .yield { display: block; font-size: .68rem; color: var(--mute); font-family: 'Space Grotesk'; font-weight: 500; margin-top: 2px; }
+  .shop-item .cost .yield b { color: var(--green); }
+
+  .shop-item.can-buy { border-color: rgba(245,197,66,.45); }
+
+  /* ---------- Upgrade chips ---------- */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .mult {
+    background: radial-gradient(circle at 30% 25%, #2c2440, #171226);
+    border: 1px solid rgba(139,92,246,.35);
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all .15s ease;
+    flex: 1 1 180px;
+    text-align: center;
+    position: relative;
+  }
+
+  .mult:hover { transform: translateY(-2px); border-color: var(--violet); }
+  .mult.bought { opacity: .45; cursor: default; }
+  .mult.bought:hover { transform: none; }
+  .mult.locked { opacity: .5; cursor: not-allowed; border-style: dashed; }
+
+  .mult .m-ico { font-size: 1.5rem; }
+  .mult .m-name { font-weight: 700; font-size: .82rem; margin-top: 6px; }
+  .mult .m-desc { font-size: .7rem; color: var(--mute); margin-top: 3px; }
+  .mult .m-cost { font-family: 'Archivo'; font-size: .8rem; color: var(--gold); margin-top: 7px; font-weight: 700; }
+
+  /* ---------- Achievements ---------- */
+  .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+
+  .ach {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    opacity: .4;
+    transition: all .2s ease;
+  }
+
+  .ach.unlocked { opacity: 1; border-color: rgba(245,197,66,.4); background: linear-gradient(180deg, rgba(245,197,66,.08), transparent 60%); }
+  .ach .a-ico { font-size: 1.5rem; }
+  .ach .a-name { font-size: .78rem; font-weight: 700; margin-top: 6px; }
+  .ach .a-desc { font-size: .66rem; color: var(--mute); margin-top: 3px; }
+  .ach .a-count { font-size: .66rem; color: var(--mute); margin-top: 6px; }
+
+  /* ---------- Stats / settings ---------- */
+  .stat-list { display: grid; gap: 10px; }
+
+  .stat-row { display: flex; justify-content: space-between; padding: 10px 4px; border-bottom: 1px solid var(--line); font-size: .86rem; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row span:last-child { color: var(--violet); font-weight: 700; text-align: right; }
+
+  .btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--panel2);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  .btn:hover { border-color: var(--violet); }
+  .btn.danger { color: var(--red); }
+  .btn.danger:hover { border-color: var(--red); }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* ---------- Rebirth ---------- */
+  .rebirth-box {
+    margin-top: 18px;
+    background: linear-gradient(135deg, rgba(139,92,246,.14), rgba(59,130,246,.1));
+    border: 1px dashed rgba(139,92,246,.5);
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .rebirth-box h3 { font-family: 'Archivo'; font-weight: 900; font-size: 1rem; margin-bottom: 6px; color: #cfc3ff; }
+  .rebirth-box p { font-size: .78rem; color: var(--mute); line-height: 1.5; }
+  .rebirth-box .gain { color: var(--violet); font-weight: 700; }
+
+  /* ---------- Offline modal ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,6,12,.82);
+    backdrop-filter: blur(6px);
+    display: grid;
+    place-items: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+
+  .overlay.open { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    width: min(420px, 88vw);
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 34px 26px;
+    transform: translateY(16px);
+    transition: transform .3s ease;
+  }
+
+  .overlay.open .modal { transform: none; }
+  .modal .m-ico { font-size: 2.4rem; }
+  .modal h2 { font-family: 'Archivo'; font-weight: 900; font-size: 1.3rem; margin: 10px 0 6px; }
+  .modal p { color: var(--mute); font-size: .86rem; line-height: 1.5; }
+  .modal .gain { display: block; font-family: 'Archivo'; font-size: 1.6rem; color: var(--gold); margin: 14px 0 20px; }
+
+  /* ---------- Toast ---------- */
+  .toast-wrap { position: fixed; top: 16px; right: 16px; z-index: 120; display: flex; flex-direction: column; gap: 10px; }
+
+  .toast {
+    background: var(--panel2);
+    border: 1px solid rgba(245,197,66,.4);
+    border-left: 3px solid var(--gold);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: .82rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    animation: toastIn .3s ease;
+    max-width: 300px;
+  }
+
+  @keyframes toastIn { from { transform: translateX(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .game-grid { grid-template-columns: 1fr; }
+  }
+
+  footer { text-align: center; margin-top: 30px; font-size: .7rem; color: var(--mute); letter-spacing: .1em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <div class="icon">📖</div>
+      <div>
+        <h1>StudyClick</h1>
+        <small>the idle learning game</small>
+      </div>
+    </div>
+    <div class="hud">
+      <div class="chip primary"><div class="k">Knowledge</div><div class="v" id="hudTotal">0</div></div>
+      <div class="chip"><div class="k">Per second</div><div class="v" id="hudRate">0</div></div>
+      <div class="chip sp"><div class="k">Study Points</div><div class="v" id="hudSP">0</div></div>
+    </div>
+  </header>
+
+  <div class="game-grid">
+
+    <!-- Left: stage -->
+    <div class="card stage">
+      <div class="count" id="count">0</div>
+      <div class="rate">earning <b id="rate">0</b> /s <span id="clickPower" style="color:var(--mute)">· click +0</span></div>
+
+      <div class="combo-wrap">
+        <span class="combo-text" id="comboText"></span>
+        <div class="combo-bar"><div class="combo-fill" id="comboFill"></div></div>
+      </div>
+
+      <div class="book" id="book">📚</div>
+      <p class="click-help">tap the book to learn. combo bonus if you keep clicking</p>
+
+      <div class="buy-row">
+        <button class="buy-btn active" data-amnt="1">x1</button>
+        <button class="buy-btn" data-amnt="10">x10</button>
+        <button class="buy-btn" data-amnt="100">x100</button>
+        <button class="buy-btn" data-amnt="max">MAX</button>
+      </div>
+      <div class="max-label">next purchase cheapest: <b id="maxLabel">0</b></div>
+    </div>
+
+    <!-- Right: shop/tabs -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" data-tab="learn">Learn</button>
+        <button class="tab" data-tab="upgrades">Upgrades<span class="dot" id="upgDot" style="display:none"></span></button>
+        <button class="tab" data-tab="achievements">Trophies</button>
+        <button class="tab" data-tab="stats">Stats</button>
+      </div>
+
+      <!-- Builders -->
+      <div class="tab-pane" id="tab-learn"></div>
+
+      <!-- Upgrades -->
+      <div class="tab-pane" id="tab-upgrades" style="display:none">
+        <div class="chips" id="upgradeList"></div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="tab-pane" id="tab-achievements" style="display:none">
+        <div class="ach-grid" id="achList"></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="tab-pane" id="tab-stats" style="display:none">
+        <div class="stat-list" id="statList"></div>
+        <div class="rebirth-box" id="rebirthBox"></div>
+        <div class="btn-row">
+          <button class="btn" onclick="saveManual()">Save now</button>
+          <button class="btn" onclick="exportSave()">Export</button>
+          <button class="btn" onclick="importSave()">Import</button>
+          <button class="btn danger" onclick="hardReset()">Hard reset</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>StudyClick · autosaves every 20s · offline progress included</footer>
+</div>
+
+<!-- Offline modal -->
+<div class="overlay" id="offlineModal">
+  <div class="modal">
+    <div class="m-ico">🌙</div>
+    <h2>While you were away...</h2>
+    <p>Your study routine kept going. You earned:</p>
+    <span class="gain" id="offlineGain">0</span>
+    <button class="btn" id="offlineClaim" style="width:100%">Sweet, back to it</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+'use strict';
+
+/* ============================= DATA ============================= */
+
+const BUILDINGS = [
+  { id: 'flashcards', ico: '📇', name: 'Flashcards',       desc: 'Little cards, big reps',       baseCost: 15,      baseYield: 0.1 },
+  { id: 'studygroup', ico: '👥', name: 'Study Group',      desc: 'Peer pressure, but positive',   baseCost: 100,     baseYield: 1 },
+  { id: 'library',     ico: '📚', name: 'Library',          desc: 'Quiet. Hush.',                 baseCost: 1100,    baseYield: 8 },
+  { id: 'tutor',       ico: '🎓', name: 'Private Tutor',    desc: 'Expensive, but worth it',      baseCost: 12000,   baseYield: 47 },
+  { id: 'dorm',        ico: '🛏️', name: 'All-Nighter',      desc: 'When tomorrow is today',       baseCost: 130000,  baseYield: 260 },
+  { id: 'professor',   ico: '📋', name: "Professor's Desk", desc: 'Real gatekeeping of knowledge', baseCost: 1.4e6,   baseYield: 1400 },
+  { id: 'lab',         ico: '🔬', name: 'Research Lab',     desc: 'Grants approved, safety not',   baseCost: 20e6,    baseYield: 7800 },
+  { id: 'bot',         ico: '🤖', name: 'AI Study Bot',     desc: 'Pretends to read the textbook', baseCost: 330e6,   baseYield: 44e3 },
+  { id: 'campus',      ico: '🏛️', name: 'Own Campus',       desc: 'Chancellor vibes',             baseCost: 5.1e9,   baseYield: 260e3 },
+  { id: 'telepathy',   ico: '🧠', name: 'Telepathy',        desc: 'Just... absorbing it',         baseCost: 75e9,    baseYield: 1.6e6 },
+  { id: 'omni',        ico: '🌌', name: 'Omni Engine',      desc: 'Knows everything, flexes none', baseCost: 1e12,    baseYield: 10e6 },
+  { id: 'cosmic',      ico: '🪐', name: 'Cosmic Degree',    desc: 'Cum laude of the universe',     baseCost: 14e12,   baseYield: 65e6 }
+];
+
+const UPGRADES = [
+  { id: 'sharp',   name: 'Pencil Sharpener', ico: '✏️', cost: 100,      desc: 'x2 click power',            type: 'click',   mult: 2 },
+  { id: 'caffeine',name: 'Coffee IV',         ico: '☕', cost: 1000,     desc: 'x2 click power',            type: 'click',   mult: 2 },
+  { id: 'muscle',  name: 'Finger Gym',        ico: '💪', cost: 10000,    desc: 'x2 click power',            type: 'click',   mult: 2 },
+  { id: 'zen',     name: 'Limitless Focus',   ico: '🧘', cost: 1e6,      desc: 'x3 click power',            type: 'click',   mult: 3 },
+  { id: 'notes',   name: 'Perfect Notes',     ico: '📒', cost: 1000,     desc: 'x2 Flashcards output',      type: 'building', b: 'flashcards',  mult: 2 },
+  { id: 'board',   name: 'Whiteboard',        ico: '🖊️', cost: 10000,    desc: 'x2 Study Group output',     type: 'building', b: 'studygroup',  mult: 2 },
+  { id: 'wifi',    name: 'Library Wi-Fi',     ico: '📶', cost: 110000,   desc: 'x2 Library output',         type: 'building', b: 'library',     mult: 2 },
+  { id: 'grant',   name: 'Grant Money',       ico: '💸', cost: 1.2e6,    desc: 'x2 Tutor output',           type: 'building', b: 'tutor',       mult: 2 },
+  { id: 'snacks',  name: 'Snack Stash',       ico: '🍕', cost: 13e6,     desc: 'x2 All-Nighter output',     type: 'building', b: 'dorm',        mult: 2 },
+  { id: 'poly',    name: 'Polished Pitch',    ico: '🎯', cost: 140e6,    desc: 'x2 Professor output',       type: 'building', b: 'professor',   mult: 2 },
+  { id: 'ethics',  name: 'Ethics Approval',   ico: '📜', cost: 2e9,      desc: 'x2 Research Lab output',    type: 'building', b: 'lab',         mult: 2 },
+  { id: 'gpu',     name: 'GPU Boost',         ico: '⚡', cost: 33e9,     desc: 'x2 AI Study Bot output',    type: 'building', b: 'bot',         mult: 2 },
+  { id: 'wing',    name: 'New Wing',          ico: '🏗️', cost: 510e9,    desc: 'x2 Own Campus output',      type: 'building', b: 'campus',      mult: 2 },
+  { id: 'neural',  name: 'Neural Link',       ico: '🔌', cost: 7.5e12,   desc: 'x2 Telepathy output',       type: 'building', b: 'telepathy',   mult: 2 },
+  { id: 'meta',    name: 'Meta-Intelligence', ico: '♾️', cost: 100e12,   desc: 'x2 Omni Engine output',     type: 'building', b: 'omni',        mult: 2 },
+  { id: 'silver',  name: 'Silver Vocabulary', ico: '🥈', cost: 50e3,     desc: 'x1.5 all income',           type: 'global',  mult: 1.5 },
+  { id: 'gold',    name: 'Golden Brain',      ico: '🥇', cost: 1e9,      desc: 'x1.75 all income',          type: 'global',  mult: 1.75 },
+  { id: 'diamond', name: 'Diamond Degree',    ico: '💎', cost: 1e12,     desc: 'x2 all income',             type: 'global',  mult: 2 }
+];
+
+const ACHIEVEMENTS = [
+  { id: 'a1', ico: '🎓', name: 'First Steps',     desc: 'Earn 100 lifetime knowledge',           check: s => s.lifetime >= 1e2    },
+  { id: 'a2', ico: '📖', name: 'Bookworm',        desc: 'Earn 10K lifetime knowledge',           check: s => s.lifetime >= 1e4    },
+  { id: 'a3', ico: '🏆', name: 'Scholar',         desc: 'Earn 1M lifetime knowledge',            check: s => s.lifetime >= 1e6    },
+  { id: 'a4', ico: '🧠', name: 'Genius',          desc: 'Earn 100M lifetime knowledge',          check: s => s.lifetime >= 1e8    },
+  { id: 'a5', ico: '🚀', name: 'Overlord',        desc: 'Earn 10B lifetime knowledge',           check: s => s.lifetime >= 1e10   },
+  { id: 'a6', ico: '🌌', name: 'Omniscient',      desc: 'Earn 1T lifetime knowledge',            check: s => s.lifetime >= 1e12   },
+  { id: 'a7', ico: '🗿', name: 'Cosmic Mind',     desc: 'Earn 100T lifetime knowledge',          check: s => s.lifetime >= 1e14   },
+  { id: 'a8', ico: '🖱️', name: 'Carpal Warning',  desc: 'Click 1,000 times',                    check: s => s.clicks >= 1000     },
+  { id: 'a9', ico: '🔥', name: 'Laser Fingers',   desc: 'Click 10,000 times',                   check: s => s.clicks >= 1e4      },
+  { id: 'a10', ico: '👥', name: 'Group Project',  desc: 'Own 10 Study Groups',                  check: s => s.buildings['studygroup'] >= 10 },
+  { id: 'a11', ico: '🏛️', name: 'Dean',           desc: 'Own 5 Libraries',                      check: s => s.buildings['library'] >= 5 },
+  { id: 'a12', ico: '‍🎓', name: 'Professor',      desc: 'Own 25 Professors',                    check: s => s.buildings['professor'] >= 25 },
+  { id: 'a13', ico: '💍', name: 'Married to Study', desc: 'Own 50 buildings total',              check: s => totalBuildings(s) >= 50 },
+  { id: 'a14', ico: '🕰️', name: 'Time Lord',      desc: 'Total 1M knowledge per second',        check: s => rate(s) >= 1e6 },
+  { id: 'a15', ico: '⭐', name: 'Graduate',       desc: 'Earn a Study Point',                    check: s => s.sp >= 1 },
+  { id: 'a16', ico: '🎉', name: 'Celebrated',     desc: 'Reach a x20 combo',                     check: s => s.bestCombo >= 20 },
+  { id: 'a17', ico: '🤑', name: 'Moneybags',      desc: 'Own 1 of everything',                   check: s => BUILDINGS.every(b => s.buildings[b.id] >= 1) },
+  { id: 'a18', ico: '💯', name: 'Maxed Out',      desc: 'Own 100 of one building',               check: s => BUILDINGS.some(b => s.buildings[b.id] >= 100) }
+];
+
+const FACTS = [
+  'Did you know? Octopuses have three hearts.',
+  'Fun fact: honey never spoils.',
+  'Did you know? Bananas are berries, strawberries are not.',
+  'Fun fact: a day on Venus is longer than its year.',
+  'Did you know? Your brain uses ~20% of your body energy.',
+  'Fun fact: you cannot hum while pinching your nose.',
+  'Did you know? Space is completely silent.',
+  'Fun fact: sloths can hold their breath longer than dolphins.'
+];
+
+/* ============================= STATE ============================= */
+
+const SAVE_KEY = 'studyclick-save-v1';
+
+function freshState() {
+  const buildings = {};
+  BUILDINGS.forEach(b => buildings[b.id] = 0);
+  const upgrades = {};
+  UPGRADES.forEach(u => upgrades[u.id] = false);
+  return {
+    knowledge: 0, lifetime: 0, clicks: 0, clickMult: 1,
+    buildings, upgrades, ach: {}, sp: 0,
+    combo: 0, comboTimer: 0, bestCombo: 0,
+    buyAmount: 1, lastTick: Date.now(), reborns: 0
+  };
+}
+
+let S = freshState();
+let buyAmount = 1;
+let activeTab = 'learn';
+
+/* ============================= HELPERS ============================= */
+
+const ABBREV = [
+  ['Qa', 1e15], ['T', 1e12], ['B', 1e9], ['M', 1e6], ['K', 1e3]
+];
+
+function fmt(n) {
+  if (!isFinite(n)) return '∞';
+  if (n < 0) return '-' + fmt(-n);
+  if (n < 1000) {
+    return n >= 100 ? n.toFixed(0) : n.toFixed(n >= 10 ? 1 : 2);
+  }
+  for (const [suf, val] of ABBREV) {
+    if (n >= val) return (n / val).toFixed(n >= val * 100 ? 1 : 2) + suf;
+  }
+  return n.toExponential(2);
+}
+
+function $(id) { return document.getElementById(id); }
+
+function buildingCost(id, amount) {
+  const b = BUILDINGS.find(x => x.id === id);
+  const owned = S.buildings[id];
+  let total = 0;
+  for (let i = 0; i < amount; i++) {
+    total += b.baseCost * Math.pow(1.15, owned + i);
+  }
+  return total;
+}
+
+function buildingCostNext(id) { return buildingCost(id, 1); }
+
+function buildingYield(id) {
+  const b = BUILDINGS.find(x => x.id === id);
+  let y = b.baseYield * S.buildings[id];
+  let mult = 1;
+  UPGRADES.forEach(u => {
+    if (u.type === 'building' && u.b === id && S.upgrades[u.id]) mult *= u.mult;
+  });
+  return y * mult;
+}
+
+function globalMult() {
+  let m = 1;
+  UPGRADES.forEach(u => { if (u.type === 'global' && S.upgrades[u.id]) m *= u.mult; });
+  m *= 1 + S.sp * 0.15;
+  return m;
+}
+
+function clickPower() {
+  let m = S.clickMult;
+  UPGRADES.forEach(u => { if (u.type === 'click' && S.upgrades[u.id]) m *= u.mult; });
+  m *= 1 + 0.15 * S.sp;
+  return m;
+}
+
+function rate() {
+  let r = 0;
+  BUILDINGS.forEach(b => r += buildingYield(b.id));
+  return r * globalMult();
+}
+
+function totalBuildings(s) {
+  return BUILDINGS.reduce((acc, b) => acc + s.buildings[b.id], 0);
+}
+
+function bestBuyCount(id) {
+  const b = BUILDINGS.find(x => x.id === id);
+  const owned = S.buildings[id];
+  let count = 0, cost = 0;
+  while (count < 5000) {
+    const next = b.baseCost * Math.pow(1.15, owned + count);
+    if (cost + next > S.knowledge) break;
+    cost += next;
+    count++;
+  }
+  return count;
+}
+
+function cheapestBuilding() {
+  let best = null, bestCost = Infinity;
+  BUILDINGS.forEach(b => {
+    const c = buildingCostNext(b.id);
+    if (c < bestCost) { bestCost = c; best = b; }
+  });
+  return best;
+}
+
+/* ============================= RENDER ============================= */
+
+function renderCount() {
+  $('count').innerHTML = fmt(S.knowledge) + ' <small>📚</small>';
+  $('hudTotal').textContent = fmt(S.knowledge);
+  $('hudRate').textContent = fmt(rate()) + '/s';
+  $('hudSP').textContent = S.sp;
+}
+
+function renderClickPower() {
+  $('clickPower').textContent = 'click +' + fmt(clickPower());
+}
+
+function fillBuilders() {
+  const el = $('tab-learn');
+  el.innerHTML = '';
+  BUILDINGS.forEach(b => {
+    const owned = S.buildings[b.id];
+    const cost = buildingCostNext(b.id);
+    const yields = buildingYield(b.id);
+    const canBuy = S.knowledge >= cost;
+
+    const item = document.createElement('div');
+    item.className = 'shop-item' + (canBuy ? ' can-buy' : '');
+    item.innerHTML =
+      '<div class="ico">' + b.ico + '</div>' +
+      '<div class="info">' +
+        '<div class="name">' + b.name + ' <span class="count">x' + owned + '</span></div>' +
+        '<div class="desc">' + b.desc + '</div>' +
+      '</div>' +
+      '<div class="cost">' + fmt(cost) +
+        '<span class="yield">+' + fmt(yields) + '/s</span></div>';
+
+    item.addEventListener('click', () => {
+      const n = buyAmount === 'max' ? bestBuyCount(b.id) : buyAmount;
+      if (n < 1) return toast('Not enough knowledge yet 🤏');
+      const totalCost = buildingCost(b.id, n);
+      if (S.knowledge < totalCost) return toast('Need ' + fmt(totalCost) + ' for that 🤏');
+      S.knowledge -= totalCost;
+      S.buildings[b.id] += n;
+      checkAchievements();
+      render();
+    });
+
+    el.appendChild(item);
+  });
+}
+
+function fillUpgrades() {
+  const el = $('upgradeList');
+  const dot = $('upgDot');
+  el.innerHTML = '';
+  let affordableCount = 0;
+
+  UPGRADES.forEach(u => {
+    const owned = S.upgrades[u.id];
+    const canAfford = S.knowledge >= u.cost;
+    if (!owned && canAfford) affordableCount++;
+
+    const chip = document.createElement('div');
+    chip.className = 'mult' + (owned ? ' bought' : (canAfford ? '' : ' locked'));
+    chip.innerHTML =
+      '<div class="m-ico">' + u.ico + '</div>' +
+      '<div class="m-name">' + u.name + '</div>' +
+      '<div class="m-desc">' + u.desc + '</div>' +
+      '<div class="m-cost">' + (owned ? 'OWNED ✓' : fmt(u.cost) + ' 📚') + '</div>';
+
+    chip.addEventListener('click', () => {
+      if (S.upgrades[u.id]) return;
+      if (S.knowledge < u.cost) return toast('Need ' + fmt(u.cost) + ' 📚');
+      S.knowledge -= u.cost;
+      S.upgrades[u.id] = true;
+      checkAchievements();
+      render();
+      toast('Unlocked ' + u.name + ' 💜');
+    });
+
+    el.appendChild(chip);
+  });
+
+  dot.style.display = affordableCount > 0 ? '' : 'none';
+}
+
+function fillAchievements() {
+  const el = $('achList');
+  el.innerHTML = '';
+  let unlocked = 0;
+
+  ACHIEVEMENTS.forEach(a => {
+    const isUnlocked = !!S.ach[a.id];
+    if (isUnlocked) unlocked++;
+
+    const div = document.createElement('div');
+    div.className = 'ach' + (isUnlocked ? ' unlocked' : '');
+    div.innerHTML =
+      '<div class="a-ico">' + a.ico + '</div>' +
+      '<div class="a-name">' + a.name + '</div>' +
+      '<div class="a-desc">' + a.desc + '</div>';
+    el.appendChild(div);
+  });
+
+  const earn = $('hudRate');
+  if (earn) { /* noop */ }
+}
+
+function fillStats() {
+  const el = $('statList');
+  const rows = [
+    ['Knowledge', fmt(S.knowledge)],
+    ['Lifetime earned', fmt(S.lifetime)],
+    ['Per second', fmt(rate())],
+    ['Total clicks', fmt(S.clicks)],
+    ['Click power', fmt(clickPower())],
+    ['Study Points', S.sp + ' (+' + Math.round(S.sp * 15) + '% income)'],
+    ['Rebirths / Graduations', S.reborns],
+    ['Total buildings', totalBuildings(S)],
+    ['Best combo', 'x' + S.bestCombo],
+    ['Autosave', 'every 20s ✓']
+  ];
+  el.innerHTML = rows.map(r =>
+    '<div class="stat-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>'
+  ).join('');
+
+  // Rebirth
+  const spGain = Math.floor(Math.sqrt(S.lifetime / 1e7));
+  const box = $('rebirthBox');
+  if (spGain >= 1) {
+    box.innerHTML =
+      '<h3>🎉 Graduate &amp; Reborn</h3>' +
+      '<p>Reset everything for <span class="gain">' + spGain + ' Study Point' + (spGain > 1 ? 's' : '') + '</span>. ' +
+      'Each SP gives +15% to ALL income permanently.</p>' +
+      '<div class="btn-row"><button class="btn" onclick="doRebirth(' + spGain + ')">Graduate for ' + spGain + ' SP</button></div>';
+  } else {
+    box.innerHTML =
+      '<h3>🎓 Graduation</h3>' +
+      '<p>Earn <b>' + fmt(1e7) + '</b> lifetime knowledge to graduate and reset for permanent Study Points. ' +
+      'Each SP gives +15% to ALL income. Next graduation at <span class="gain">' + fmt(Math.pow((spGain + 1), 2) * 1e7) + '</span> lifetime.</p>';
+  }
+}
+
+function render() {
+  renderCount();
+  renderClickPower();
+  fillBuilders();
+  fillUpgrades();
+  fillAchievements();
+  if (activeTab === 'stats') fillStats();
+  renderCombo();
+  updateMaxLabel();
+}
+
+function updateMaxLabel() {
+  const cheap = cheapestBuilding();
+  $('maxLabel').textContent = cheap ? cheap.name + ' (' + fmt(buildingCostNext(cheap.id)) + ')' : 'nothing';
+}
+
+/* ============================= COMBO ============================= */
+
+function renderCombo() {
+  const text = $('comboText');
+  const fill = $('comboFill');
+  if (S.combo >= 2) {
+    const pct = S.combo / 20 * 100;
+    text.style.display = '';
+    text.textContent = 'COMBO x' + S.combo + '  +' + (S.combo * 10) + '% click';
+    fill.style.width = Math.min(pct, 100) + '%';
+  } else {
+    text.style.display = 'none';
+    fill.style.width = '0%';
+  }
+}
+
+/* ============================= ACTION ============================= */
+
+function doClick(e) {
+  const now = Date.now();
+  if (now - S.comboTimer < 1500) {
+    S.combo = Math.min(20, S.combo + 1);
+    S.bestCombo = Math.max(S.bestCombo, S.combo);
+  } else {
+    S.combo = 1;
+  }
+  S.comboTimer = now;
+
+  const gain = clickPower() * (1 + S.combo * 0.1);
+  addKnowledge(gain);
+
+  const book = $('book');
+  const rect = book.getBoundingClientRect();
+  for (let i = 0; i < (S.combo >= 15 ? 3 : 1); i++) {
+    const f = document.createElement('span');
+    f.className = 'floater';
+    f.textContent = '+' + fmt(gain * (S.combo >= 15 ? 1 : 1));
+    f.style.left = (Math.random() * 70 + 15) + '%';
+    f.style.top = (Math.random() * 30 + 5) + '%';
+    book.appendChild(f);
+    setTimeout(() => f.remove(), 1100);
+  }
+
+  renderCombo();
+  checkAchievements();
+}
+
+function addKnowledge(amount) {
+  S.knowledge += amount;
+  S.lifetime += amount;
+  requestAnimationFrame(() => {
+    renderCount();
+    if (activeTab === 'learn') fillBuilders();
+    if (activeTab === 'upgrades') fillUpgrades();
+  });
+}
+
+/* ============================= ACHIEVEMENTS ============================= */
+
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if (S.ach[a.id]) return;
+    try {
+      if (a.check(S)) {
+        S.ach[a.id] = true;
+        toast('🏆 ' + a.name + ' - ' + a.desc);
+        if (activeTab === 'achievements') fillAchievements();
+      }
+    } catch (e) {}
+  });
+}
+
+/* ============================= REBIRTH ============================= */
+
+function doRebirth() {
+  const spGain = Math.floor(Math.sqrt(S.lifetime / 1e7));
+  if (spGain < 1) return;
+  const earned = spGain;
+  S.sp += earned;
+  S.reborns++;
+  const keeps = Object.assign({}, S, {
+    knowledge: 0, lifetime: 0, clicks: 0, clickMult: 1,
+    buildings: (() => { const b = {}; BUILDINGS.forEach(x => b[x.id] = 0); return b; })(),
+    upgrades: (() => { const u = {}; UPGRADES.forEach(x => u[x.id] = false); return u; })(),
+    combo: 0, comboTimer: 0
+  });
+  S = keeps;
+  toast('🎓 Graduated for ' + earned + ' Study Point' + (earned > 1 ? 's' : '') + '!');
+  render();
+  save();
+}
+
+/* ============================= PURCHASE AMOUNT ============================= */
+
+function setBuyAmount(amount) {
+  buyAmount = amount;
+  document.querySelectorAll('.buy-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.amnt === String(amount));
+  });
+}
+
+/* ============================= TABS ============================= */
+
+function switchTab(name) {
+  activeTab = name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+  $('tab-' + name).style.display = '';
+  if (name === 'stats') fillStats();
+  if (name === 'achievements') fillAchievements();
+}
+
+/* ============================= SAVE / LOAD ============================= */
+
+function save() {
+  S.lastTick = Date.now();
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(S));
+  } catch (e) {}
+}
+
+function saveManual() {
+  save();
+  toast('Saved ✓');
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    const fresh = freshState();
+    S = Object.assign(fresh, data);
+    // ensure all keys exist
+    BUILDINGS.forEach(b => { if (typeof S.buildings[b.id] !== 'number') S.buildings[b.id] = 0; });
+    UPGRADES.forEach(u => { if (typeof S.upgrades[u.id] !== 'boolean') S.upgrades[u.id] = false; });
+    buyAmount = typeof S.buyAmount === 'number' ? S.buyAmount : 1;
+
+    // offline earnings
+    const away = (Date.now() - (data.lastTick || Date.now())) / 1000;
+    if (away > 30 && !data._offlineShown) {
+      const gain = rate() * Math.min(away * 0.5, 12 * 3600);
+      if (gain > 0) {
+        addKnowledge(gain);
+        $('offlineGain').textContent = '+' + fmt(gain) + ' 📚';
+        $('offlineModal').classList.add('open');
+        S._offlineShown = true;
+        S.lastTick = Date.now();
+        save();
+      }
+    }
+  } catch (e) {}
+}
+
+function exportSave() {
+  save();
+  const raw = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  prompt('Copy your save: (or send it to another device)', raw);
+  toast('Save exported ✓');
+}
+
+function importSave() {
+  const raw = prompt('Paste your save below:');
+  if (!raw) return;
+  try {
+    const data = JSON.parse(decodeURIComponent(escape(atob(raw.trim()))));
+    S = Object.assign(freshState(), data);
+    save();
+    render();
+    toast('Save imported ✓');
+  } catch (e) {
+    toast('That save did not look right 🤔');
+  }
+}
+
+function hardReset() {
+  if (!confirm('Delete EVERYTHING? This is permanent.')) return;
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+  S = freshState();
+  render();
+  toast('Fresh start. Good luck 🍀');
+}
+
+/* ============================= TOAST ============================= */
+
+function toast(msg) {
+  const wrap = $('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity .3s';
+    setTimeout(() => t.remove(), 300);
+  }, 2600);
+}
+
+/* ============================= FACTS ============================= */
+
+let factIdx = 0;
+function rotateFact() {
+  const factsAbout = document.querySelector('.click-help');
+  if (factsAbout) factsAbout.textContent = FACTS[factIdx % FACTS.length];
+  factIdx++;
+}
+
+/* ============================= GAME LOOP ============================= */
+
+let lastAcc = 0;
+function tick() {
+  const now = Date.now();
+  let dt = (now - lastAcc) / 1000;
+  lastAcc = now;
+  if (dt > 5) dt = 0;
+
+  const gain = rate() * dt;
+  if (gain > 0) {
+    S.knowledge += gain;
+    S.lifetime += gain;
+  }
+
+  // combo decay
+  if (S.combo > 0 && now - S.comboTimer > 1500) {
+    S.combo = 0;
+    renderCombo();
+  }
+
+  renderCount();
+  if (activeTab === 'learn') fillBuilders();
+  if (activeTab === 'upgrades') fillUpgrades();
+}
+
+/* ============================= INIT ============================= */
+
+function init() {
+  load();
+
+  $('book').addEventListener('click', (e) => doClick(e));
+  $('book').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    doClick(e);
+  }, { passive: false });
+
+  document.querySelectorAll('.buy-btn').forEach(b => {
+    b.addEventListener('click', () => setBuyAmount(b.dataset.amnt));
+  });
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => switchTab(t.dataset.tab));
+  });
+
+  $('offlineClaim').addEventListener('click', () => {
+    $('offlineModal').classList.remove('open');
+  });
+
+  setBuyAmount(buyAmount);
+  switchTab('learn');
+  render();
+  checkAchievements();
+
+  lastAcc = Date.now();
+  setInterval(tick, 150);
+  setInterval(save, 20000);
+  setInterval(rotateFact, 9000);
+  window.addEventListener('beforeunload', save);
+}
+
+init();
+</script>
+</body>
+</html>
